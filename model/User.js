@@ -6,7 +6,7 @@ const User = new Schema({
     lastName: String,
     email: String,
     password: String,
-    role_id: {
+    role: {
         type: mongoose.Schema.ObjectId,
         ref: 'Role',
         required: true
