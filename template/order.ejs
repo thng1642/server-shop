@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="/template/style.css" type="text/css"> -->
+    <title>Order</title>
+    <%-
+        '<style>'
+        + include(`./style.css`)
+        + '</style>'
+    %>
+</head>
+<body>
+    <h2>Xin chào, <%= name %></h2>
+    <h3>Phone: <%= phoneNumber %></h3>
+    <h3>Address: <%= address %></h3>
+    <table>
+        <tr>
+            <th>Tên sản phẩm</th>
+            <th>Hình ảnh</th>
+            <th>Giá</th>
+            <th>Số lượng</th>
+            <th>Thành tiền</th>
+        </tr>
+        <% for(let i = 0; i < items.length; i++){ %>
+            <!-- <li><%= items[i].name %></li> -->
+            <tr>
+                <td>
+                    <%= items[i].name %>
+                </td>
+                <td>
+                    <img src="<%= items[i].img %>" />
+                </td>
+                <td>
+                    <%= items[i].price %><br>VND
+                </td>
+                <td>
+                    <%= items[i].quantity %>
+                </td>
+                <td>
+                    <%= items[i].total %><br>VND
+                </td>
+            </tr>
+        <% } %>
+    </table>
+    <h2>Tổng thanh toán:<br><%= totalPrice %> VND</h2>
+    <h2>Cảm ơn bạn!</h2>
+</body>
+</html>

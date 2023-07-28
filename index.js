@@ -3,12 +3,29 @@ const cors = require('cors')
 const app = express()
 const db = require('./config/db')
 const route = require('./routes')
+const session = require("express-session")
+const storeSession = require('connect-mongo')
+
 // const Role = require('./model/Role')
+
+// //set view engine
+// app.set('view engine', 'ejs')
+app.use(express.static(__dirname, + '/template'))
 // Set up to server can readd request form/json from client
 app.use(express.urlencoded({
     extended: true
 }))
 app.use(express.json())
+// app.use(session({
+//     store: storeSession.create({mongoUrl: 'mongodb://localhost:27017/funix-shop' }),
+//     secret: "fx2177",
+//     saveUninitialized: true,
+//     resave: false,
+//     cookie: {
+//         httpOnly: true,
+//         secure: true // cookie is only accessible over HTTP, requires HTTPS
+//     }
+// }))
 // Set up Cors
 const whiteList = ["http://localhost:3000", "http://localhost:3001"]
 const corsOptions = {

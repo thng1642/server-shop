@@ -28,7 +28,8 @@ exports.authenticationClient = async ( email, password ) => {
                         userInfo: {
                             email: user.email,
                             firstName: user.firstName,
-                            lastName: user.lastName
+                            lastName: user.lastName,
+                            phoneNumber: user.phoneNumber
                         }
                     }, null]
                 } else {

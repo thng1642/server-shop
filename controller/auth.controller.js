@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const mongoose = require('mongoose')
+const {body, checkSchema, validationResult} = require('express-validator')
 
 const authService = require("../service/auth.service")
 const UserDto = require('../model/User')
@@ -12,12 +13,22 @@ const RoleDto = require('../model/Role')
  */
 exports.loginClient = async (req, res) => {
     const { email, password } = req.body
-    const [data, error] = await authService.authenticationClient(email, password)
-
-    if (data) {
-        res.json(data)
+    const errors = validationResult(req)
+    // console.log(errors)
+    if (errors.isEmpty()) {
+        const [data, error] = await authService.authenticationClient(email, password)
+    
+        if (data) {
+            res.json(data)
+        } else {
+            res.status(400).json({
+                message: error
+            })
+        }
     } else {
-        res.status(401).send(error)
+        res.status(400).json({
+            message: errors.array()[0].msg
+        })
     }
 }
 /**
@@ -25,22 +36,34 @@ exports.loginClient = async (req, res) => {
  * [POST] api/v1/signup
  */
 exports.signUpClient = async (req, res) => {
-    
     const codedPassword = bcrypt.hashSync(req.body.password, 12)
-    const user = new UserDto({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        password: codedPassword,
-        role: new mongoose.Types.ObjectId("64be8cdbe0026036b3237904"),
-    })
-    try {
-        await user.save()
-
-        res.send('hello world')
-    } catch(error) {
-        console.log(error)
-        res.status(501).send(error.message)
-        return
+    const errors = validationResult(req)
+    if (errors.isEmpty()) {
+        // res.send("Hello world")
+        const user = new UserDto({
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email,
+            phoneNumber: req.body.phoneNumber,
+            password: codedPassword,
+            role: new mongoose.Types.ObjectId("64be8cdbe0026036b3237904"),
+        })
+        try {
+            await user.save()
+            res.send('Đăng ký thành công')
+        } catch(error) {
+            console.log(error)
+            res.status(501).send(error.message)
+            return
+        }
+    } else {
+        const responseError = errors.array().map(item => ({
+            path: item.path,
+            message: item.msg
+        }))
+        res.status(400).json({
+            error: responseError
+        })
     }
+
 }
