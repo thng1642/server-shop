@@ -60,5 +60,6 @@ router.post('/place-order',
         next()
     },
 [middleAuth], controllerHome.placeToOrder)
-
+router.post('/order', [middleAuth], controllerHome.historyOrders)
+router.post('/detail/order/', [middleAuth], controllerHome.getDetailsOrderById)
 module.exports = router

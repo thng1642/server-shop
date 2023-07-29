@@ -146,6 +146,7 @@ exports.placeToOrderProducts = async (items, email, phoneNumber,
                 name: items[i].name,
                 quantity: items[i].quantity,
                 price: items[i].price,
+                image: items[i].img,
                 product: new mongoose.Types.ObjectId(items[i].id)
             })
             // console.log(tmpItem)
@@ -176,6 +177,41 @@ exports.placeToOrderProducts = async (items, email, phoneNumber,
         return [ resultOrder, null ]
     } catch (error) {
         console.log(error)
+        return [ null, error.message ]
+    }
+}
+/**
+ * Get history order by email
+ * @param {String} userId 
+ */
+exports.getOrdersHistory = async (userId) => {
+    try {
+        // gets all order by userId
+        const orders = await OrderDto.find({ user: userId }) 
+        return [ orders, null ]
+    } catch(error) {
+        return  [ null, error.message ]
+    }
+}
+/**
+ * Get details order
+ */
+exports.getDetailsOrder = async (orderId) => {
+    try {
+        const order = await OrderDto.findById(orderId)
+            .populate('items')
+            .populate('user')
+        const response = {
+            items: order.items,
+            email:order.user.email,
+            name: order.name,
+            phoneNumber: order.phoneNumber,
+            address: order.address,
+            totalPrice: order.totalPrice
+        }
+        return [ response, null ]
+    } catch(error) {
+        console.log("Error when get details order", error)
         return [ null, error.message ]
     }
 }

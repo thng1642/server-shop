@@ -9,7 +9,7 @@ exports.getTrendingProducts = async (req, res) => {
     if (products) {
         res.json(products)
     } else {
-        res.status(501).send(error)
+        res.status(501).json(error)
     }
 }
 
@@ -24,7 +24,7 @@ exports.getDetailsProductById = async (req, res) => {
     if (data) {
         res.json(data)
     } else {
-        res.status(501).send(error)
+        res.status(501).json(error)
     }
 }
 /**
@@ -37,7 +37,7 @@ exports.getRelativeProducts = async (req, res) => {
     if (data) {
         res.json(data)
     } else {
-        res.status(501).send(error)
+        res.status(501).json(error)
     }
 }
 /**
@@ -54,6 +54,33 @@ exports.placeToOrder = async (req, res) => {
     if (data) {
         res.json(data)
     } else {
-        res.status(501).send(error)
+        res.status(501).json(error)
+    }
+}
+/**
+ * Get list history order
+ * [GET] /api/v1/order
+ */
+exports.historyOrders = async (req, res) => {
+    const [result, error] = await productService
+            .getOrdersHistory(req.userId)
+    if (result) {
+        res.json(result)
+    } else {
+        res.status(400).json(error)
+    }
+}
+/**
+ * Gets details order
+ * [GET] /api/v1/detail/order
+ */
+exports.getDetailsOrderById = async (req, res) => {
+    const userId = req.userId
+    const orderId = req.body.orderId
+    const [ data, error ] = await productService.getDetailsOrder(orderId)
+    if (data) {
+        res.json(data)
+    } else {
+        res.status(501).json(error)
     }
 }

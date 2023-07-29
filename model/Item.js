@@ -5,6 +5,7 @@ const Item = new Schema({
     quantity: Number,
     name: String,
     price: String,
+    image: String,
     product: {
         type: mongoose.Types.ObjectId,
         ref: "Product",
