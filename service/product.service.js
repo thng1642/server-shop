@@ -9,6 +9,7 @@ const StockDto = require('../model/Stock')
 const UserDto = require('../model/User')
 const OrderDto = require('../model/Order')
 const ProductDto = require('../model/Product')
+const CategoryDto = require('../model/Category')
 
 // const { ItemDto, StockDto, UserDto, ProductDto, OrderDto} = require('../model')
 /**

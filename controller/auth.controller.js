@@ -65,5 +65,17 @@ exports.signUpClient = async (req, res) => {
             error: responseError
         })
     }
+}
+/**
+ * Login for admin
+ * [POST] admin/api/v1/login
+ */
+exports.loginAdmin = (req, res) => {
 
+    const errors = validationResult(req)
+    if ( errors.isEmpty() ) {
+        res.send("hello world")
+    } else {
+        res.status(400).send("Loi")
+    }
 }
