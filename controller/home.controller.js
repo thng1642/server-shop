@@ -1,5 +1,6 @@
 
 const productService = require('../service/product.service')
+const adminService = require('../service/admin.service')
 /**
  * Show up list products
  * [GET] /api/v1/trending
@@ -79,6 +80,43 @@ exports.getDetailsOrderById = async (req, res) => {
     const orderId = req.body.orderId
     const [ data, error ] = await productService.getDetailsOrder(orderId)
     if (data) {
+        res.json(data)
+    } else {
+        res.status(501).json(error)
+    }
+}
+/**
+ * Gets all products from admin
+ * [GET] /admin/api/v1/list-product
+ */
+exports.getAllProduct = async (req, res) => {
+    const [ data, error ] = await adminService.getListProduct()
+    if ( data ) {
+        res.json(data)
+    } else {
+        res.status(501).json(error)
+    }
+}
+/**
+ * get all history orders for administrator
+ * [GET] /admin/api/v1/list-order
+ */
+exports.getAllOrder = async (req, res) => {
+    const limit = parseInt(req.query.limit)
+    const [ data, error ] = await adminService.getListOrder(limit)
+    if ( data ) {
+        res.json(data)
+    } else {
+        res.status(501).json(error)
+    }
+}
+/**
+ * Statistics data business
+ * [GET] /admin/api/v1/overview
+ */
+exports.getStatistics = async (req, res) => {
+    const [data, error] = await adminService.getStatistic()
+    if ( data ) {
         res.json(data)
     } else {
         res.status(501).json(error)

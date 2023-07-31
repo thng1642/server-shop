@@ -70,12 +70,17 @@ exports.signUpClient = async (req, res) => {
  * Login for admin
  * [POST] admin/api/v1/login
  */
-exports.loginAdmin = (req, res) => {
-
-    const errors = validationResult(req)
-    if ( errors.isEmpty() ) {
-        res.send("hello world")
+exports.loginAdmin = async (req, res) => {
+    const user = req.body
+    const [ data, error ] = await authService.authenticationAdmin(user)
+    if ( data ) {
+        req.session.User = {
+            email: data.user.email,
+            id: data.user._id
+        }
+        // console.log(data)
+        res.send("Hello world")
     } else {
-        res.status(400).send("Loi")
+        res.status(403).send(error)
     }
 }

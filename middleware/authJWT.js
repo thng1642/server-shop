@@ -8,7 +8,7 @@ const { SECRET_KEY } = require('../config/constant')
  */
 module.exports = checkValidToken = async (req, res, next) => {
     // JWT auth
-    const jwtStr = req.get('Authorization').split(" ")[1]
+    const jwtStr = req.get('Authorization')?.split(" ")[1]
     if (!jwtStr) {
         res.status(403).json({
             message: "Token not provided!"

@@ -16,16 +16,20 @@ app.use(express.urlencoded({
     extended: true
 }))
 app.use(express.json())
-// app.use(session({
-//     store: storeSession.create({mongoUrl: 'mongodb://localhost:27017/funix-shop' }),
-//     secret: "fx2177",
-//     saveUninitialized: true,
-//     resave: false,
-//     cookie: {
-//         httpOnly: true,
-//         secure: true // cookie is only accessible over HTTP, requires HTTPS
-//     }
-// }))
+app.use(session({
+    store: storeSession.create({mongoUrl: 'mongodb://localhost:27017/funix-shop' }),
+    secret: "fx2177",
+    saveUninitialized: true,
+    resave: true,
+    cookie: {
+        path: '/admin'
+    }
+    // cookie: {
+    //     // httpOnly: true,
+    //     maxAge: 1000 * 60 * 60 * 24 ,
+    //     secure: true // cookie is only accessible over HTTP, requires HTTPS
+    // }
+}))
 // Set up Cors
 const whiteList = ["http://localhost:3000", "http://localhost:3001"]
 const corsOptions = {

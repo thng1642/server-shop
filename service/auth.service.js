@@ -12,7 +12,9 @@ const UserDto = require('../model/User')
  */
 exports.authenticationClient = async ( email, password ) => {
     try {
-        const user = await UserDto.findOne({ email: email }).populate('role')
+        const user = await UserDto
+            .findOne({ email: email })
+            .populate('role')
         if (user) {
             if (user.role.name === 'client') {
                 const isCorrect = bcrypt.compareSync(password, user.password)
@@ -42,5 +44,39 @@ exports.authenticationClient = async ( email, password ) => {
     } catch (error) {
         console.log(error)
         return [null, error.message]
+    }
+}
+exports.authenticationAdmin = async (user) => {
+    try {
+        const result = await UserDto
+            .findOne({ email: user.email })
+            .populate('role')
+        if (Boolean(result?.role)) {
+            // Check password
+            const isCorrect = await bcrypt.compare(user.password, result.password)
+            if ( !isCorrect) {
+                throw new Error("Tài khoản hoặc mật khẩu không chính xác!")
+            }
+            // Check role, have admin ?
+            if (result.role.name === "admin") {
+                const access_token = jwt.sign(
+                    {id: result._id, role: "admin"},
+                    SECRET_KEY,
+                    {
+                        algorithm: 'HS256'
+                    }
+                )
+                return [ {
+                    access_token: access_token,
+                    user: result
+                }, null ]
+            } else {
+                throw new Error("Tài khoản không có quyền truy cập!")
+            }
+        } else {
+            throw new Error("Tài khoản không được cấp phép!")
+        }
+    } catch( error ) {
+        return [ null, error.message ]
     }
 }
