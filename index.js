@@ -1,13 +1,12 @@
 const express = require('express')
 const cors = require('cors')
+const path = require('path')
 const app = express()
+const storeSession = require('connect-mongo')
+const session = require("express-session")
+
 const db = require('./config/db')
 const route = require('./routes')
-const session = require("express-session")
-const storeSession = require('connect-mongo')
-
-// const Role = require('./model/Role')
-
 // //set view engine
 // app.set('view engine', 'ejs')
 app.use(express.static(__dirname, + '/template'))
@@ -42,6 +41,7 @@ const corsOptions = {
     }
 }
 app.use(cors(corsOptions))
+// app.use(express.static(path.join(__dirname, 'images')))
 // // simple route
 // app.get("/", (req, res) => {
 

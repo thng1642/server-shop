@@ -4,6 +4,8 @@ const orderDto = require('../model/Order')
 const roleDto = require('../model/Role')
 const userDto = require('../model/User')
 const { getMonth, getYear, format } = require('date-fns')
+const { default: mongoose } = require('mongoose')
+const Stock = require('../model/Stock')
 
 exports.getListProduct = async () => {
     try {
@@ -54,6 +56,9 @@ exports.getListOrder = async (limit) => {
         return [ null, error.message ]
     }
 }
+/**
+ * gets number of clients, earnings of month and count of new order
+ */
 exports.getStatistic = async () => {
     try {
         // => get clients
@@ -87,6 +92,42 @@ exports.getStatistic = async () => {
         // get newest orders
     } catch(error) {
         console.log(error)
+        return [ null, error.message ]
+    }
+}
+/**
+ * Create new product
+ * @param {String} name product name
+ * @param {String} price product price
+ * @param {String} category category id
+ * @param {String} short description shortly
+ * @param {String} long description longly
+ * @param {String[]} images list images was saved at firebase
+ * @param {String} quantity
+ */
+exports.createProduct = async (name, price, category, short, long, images, quantity) => {
+    try {
+        const product = new productDto({
+            name: name,
+            price: price,
+            long_desc: long,
+            short_desc: short,
+            img1: images[0],
+            img2: images[1],
+            img3: images[2],
+            img4: images[3],
+            category: new mongoose.Types.ObjectId(category)
+        })
+        await product.save()
+        // saving quantity into stock
+        const stock = new Stock({
+            count: quantity,
+            product: new mongoose.Types.ObjectId(product._id)
+        })
+        stock.save()
+        return [ "Success", null ]
+    } catch (error) {
+        console.log("Error when creating product\n", error)
         return [ null, error.message ]
     }
 }
