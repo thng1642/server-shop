@@ -79,7 +79,7 @@ exports.loginAdmin = async (req, res) => {
             id: data.user._id
         }
         // console.log(data)
-        res.send("Hello world")
+        res.json({ access_token: data.access_token })
     } else {
         res.status(403).send(error)
     }

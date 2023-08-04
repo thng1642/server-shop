@@ -142,6 +142,11 @@ exports.placeToOrderProducts = async (items, email, phoneNumber,
     const listItemsId = []
     try {
         for (let i = 0; i < nItem; i++) {
+            // ... update count of product in stock
+            const stock = await StockDto.findOne({ product: items[i].id })
+            if (stock.count - items[i].quantity < 0) {
+                throw Error("Hết hàng!")
+            }
             // ...Saving items of order
             const tmpItem = new ItemDto({
                 name: items[i].name,
@@ -153,11 +158,6 @@ exports.placeToOrderProducts = async (items, email, phoneNumber,
             // console.log(tmpItem)
             const result = await tmpItem.save()
             listItemsId.push(result._id)
-            // ... update count of product in stock
-            const stock = await StockDto.findOne({ product: items[i].id })
-            if (stock.count - items[i].quantity < 0) {
-                throw Error("Hết hàng!")
-            }
             await stock.updateOne({ count: stock.count - items[i].quantity })
         }
         // ... Finding user

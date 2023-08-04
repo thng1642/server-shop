@@ -16,13 +16,10 @@ app.use(express.urlencoded({
 }))
 app.use(express.json())
 app.use(session({
-    store: storeSession.create({mongoUrl: 'mongodb://localhost:27017/funix-shop' }),
+    store: storeSession.create({mongoUrl: 'mongodb+srv://thuanfx:O2sZeFdRrvFOXp80@cluster0.gu5iyvv.mongodb.net/funix_shop?retryWrites=true&w=majority'}),
     secret: "fx2177",
-    saveUninitialized: true,
-    resave: true,
-    cookie: {
-        path: '/admin'
-    }
+    saveUninitialized: false,
+    resave: false,
     // cookie: {
     //     // httpOnly: true,
     //     maxAge: 1000 * 60 * 60 * 24 ,
@@ -38,7 +35,9 @@ const corsOptions = {
         } else {
             callback(new Error('Not allowed by CORS'))
         }
-    }
+    },
+    optionsSuccessStatus: 200,
+    credentials: true,
 }
 app.use(cors(corsOptions))
 // app.use(express.static(path.join(__dirname, 'images')))

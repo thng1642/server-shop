@@ -124,10 +124,48 @@ exports.createProduct = async (name, price, category, short, long, images, quant
             count: quantity,
             product: new mongoose.Types.ObjectId(product._id)
         })
-        stock.save()
-        return [ "Success", null ]
+        await stock.save()
+        return [ product, null ]
     } catch (error) {
         console.log("Error when creating product\n", error)
+        return [ null, error.message ]
+    }
+}
+// Get details products for update
+exports.getProduct = async (prodId) => {
+    try {
+        const prod = await productDto.findById(prodId)
+        // console.log("Product", prod)
+        const stock = await Stock.findOne({ product: prodId })
+        const data = {
+            _id: prod._id,
+            name: prod.name,
+            price: prod.price,
+            category: prod.category,
+            short_desc: prod.short_desc,
+            long_desc: prod.long_desc,
+            quantity: stock.count
+        }
+        return [ data, null ]
+    } catch (error) {
+        console.log(error.message)
+        return [ null, error.message ]
+    }
+}
+// Update product 
+exports.updateProduct = async (id, name, category, price, short, long) => {
+    try {
+        const product = await productDto.findByIdAndUpdate(id, {
+            name: name,
+            category: category,
+            price: price,
+            short_desc: short,
+            long_desc: long
+        }, { new: true })
+        console.log(product)
+        return [ product, null ]
+    } catch (error) {
+        console.log("Error when update product", error.message)
         return [ null, error.message ]
     }
 }

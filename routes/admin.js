@@ -41,15 +41,24 @@ router.post('/login', checkSchema({
         errorMessage: "Mật khẩu ít nhất 8 ký tự!"
     }
 }) ,adminMiddle.validateData, controllerAuth.loginAdmin)
-
-router.get('/list-product',   
+router.post("/product", adminMiddle.checkJwtAdmin,
+    controllerProduct.updateProduct)
+router.get('/list-product', adminMiddle.checkJwtAdmin, 
     controllerHome.getAllProduct)
 router.get('/list-order', adminMiddle.checkJwtAdmin,
     controllerHome.getAllOrder)
 router.get('/overview', adminMiddle.checkJwtAdmin,
     controllerHome.getStatistics)
+router.get("/list-category", controllerHome.getAllCategory)
 // Add new product
-router.post('/add-product', 
+router.post('/add-product', adminMiddle.checkJwtAdmin,
     upload.array("img"), 
 controllerProduct.createProduct)
+// Gets product to update
+router.get("/product", controllerProduct.getProduct)
+// Logout user
+router.post('/logout', (req, res, next) => {
+    req.session.destroy()
+    next()
+})
 module.exports = router

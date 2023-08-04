@@ -1,6 +1,6 @@
-
 const productService = require('../service/product.service')
 const adminService = require('../service/admin.service')
+const categoryDto = require("../model/Category")
 /**
  * Show up list products
  * [GET] /api/v1/trending
@@ -121,4 +121,18 @@ exports.getStatistics = async (req, res) => {
     } else {
         res.status(501).json(error)
     }
+}
+/**
+ * Get all category
+ * [GET] /admin/api/v1/list-category
+ */
+exports.getAllCategory = async (req, res) => {
+    const categories = await categoryDto.find()
+    const data = categories.map(value => (
+        {
+            name: value.name,
+            _id: value._id
+        }
+    ))
+    res.json(data)
 }

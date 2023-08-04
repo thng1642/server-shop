@@ -38,7 +38,7 @@ async function checkJwtAdmin(req, res, next) {
     try {
         // Decode jwt
         const decoded = await jwt.verify(jwtStr, SECRET_KEY)
-        // console.log(decoded)
+        console.log(req.session)
         if (decoded.role !== "admin" || decoded.role !== 'supporter') {
             if (decoded.id !== req.session.User?.id) {
                 throw new Error("Từ chối truy cập!")

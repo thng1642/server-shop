@@ -1,5 +1,8 @@
 const { initializeApp } = require('firebase/app')
 const { getStorage, ref, uploadBytesResumable, getDownloadURL } = require('firebase/storage')
+const { v4: uuidv4 } = require('uuid')
+
+const adminService = require('../service/admin.service')
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -19,26 +22,58 @@ const store = getStorage(app)
  * [POST] /admin/api/v1/add-product
  */
 exports.createProduct = async (req, res) => {
-
+    // console.log(req.files, req.body)
     try {
-        // const files = Object.values(req.files)
+        const files = Object.values(req.files)
         
-        // const n = files.length
-        // for (let i = 0; i < n; i++) {
-        //     let tmp = files[i]
-        //     // Change name to unique
-        //     const imagesRef = ref(store, `test/${tmp.originalname}`)
-        //     const metadata = {
-        //         contentType: tmp.mimetype,
-        //     }
-        //     const uploadImg = await uploadBytesResumable(imagesRef, tmp.buffer, metadata)
-        //     const downloadUrl = await getDownloadURL(uploadImg.ref)
-        //     console.log(downloadUrl)
-        // }
-        
-        res.send("hello world")
+        const n = files.length
+        const images = []
+        for (let i = 0; i < n; i++) {
+            let tmp = files[i]
+            // Change name to unique
+            const imagesRef = ref(store, `test/${uuidv4()}`)
+            const metadata = {
+                contentType: tmp.mimetype,
+            }
+            const uploadImg = await uploadBytesResumable(imagesRef, tmp.buffer, metadata)
+            const downloadUrl = await getDownloadURL(uploadImg.ref)
+            console.log(downloadUrl)
+            images.push(downloadUrl)
+        }
+        const [ result, err ] = await adminService.createProduct(req.body.name,
+            req.body.price, req.body.category, req.body.short_desc, req.body.long_desc,
+            images, req.body.quantity)
+        if ( result ) {
+            res.json(result)
+        } else {
+            throw new Error(err)
+        }
     } catch (error) {
         console.log(error)
         res.status(400).send(error.message)
+    }
+}
+/**
+ * get details product to update
+ * [GET] admin/api/v1/product
+ */
+exports.getProduct = async (req, res) => {
+    const prodId = req.query.id
+    console.log("ID: ", prodId)
+    const [ data, error ] = await adminService.getProduct(prodId)
+    res.json(data)
+}
+/**
+ * Updating product
+ * [POST] admin/api/v1/product
+ */
+exports.updateProduct = async (req, res) => {
+    const { _id, name, category, price, short_desc, long_desc } = req.body
+    const [ result, error ] = await adminService.updateProduct(_id, name, category, 
+        price, short_desc, long_desc)
+    if (result) {
+        res.json(result)
+    } else {
+        res.status(500).json(error)
     }
 }
