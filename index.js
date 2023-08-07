@@ -53,11 +53,11 @@ app.use(cors(corsOptions))
 //     res.json({ message: "Welcome to your application." })
 
 // })
-app.use("/", (req, res) => {
-    res.json({
-        message: "Deploy success",
-        title: "Your welcome"
-    })
-})
+// app.use("/", (req, res) => {
+//     res.json({
+//         message: "Deploy success",
+//         title: "Your welcome"
+//     })
+// })
 route(app)
 app.listen(5000)
