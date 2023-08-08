@@ -137,7 +137,10 @@ exports.getRelativeProducts = async (id) => {
  */
 exports.placeToOrderProducts = async (items, email, phoneNumber, 
         address, name, totalPrice) => {
-    
+
+    const session = await mongoose.startSession()
+    session.startTransaction()
+
     const nItem = items.length
     const listItemsId = []
     try {
@@ -156,28 +159,34 @@ exports.placeToOrderProducts = async (items, email, phoneNumber,
                 product: new mongoose.Types.ObjectId(items[i].id)
             })
             // console.log(tmpItem)
-            const result = await tmpItem.save()
+            const result = await tmpItem.save({ session })
             listItemsId.push(result._id)
-            await stock.updateOne({ count: stock.count - items[i].quantity })
+            await stock.updateOne({ count: stock.count - items[i].quantity }, { session })
         }
-        // ... Finding user
-        const user = await UserDto.findOne({ email: email})
-        // ... Saving items into Order
-        const order = new OrderDto({
-            totalPrice: totalPrice,
-            phoneNumber: phoneNumber,
-            name: name,
-            status: "Pending",
-            address: address,
-            user: new mongoose.Types.ObjectId(user._id),
-            items: listItemsId.map(value => new mongoose.Types.ObjectId(value)),
-        })
-        const resultOrder = await order.save()
-        // ... sending email confirm order success
-        sendingEmailConfirmOrder(email, items, name, phoneNumber, address, totalPrice)
+        throw Error("Hết hàng!")
+        // // ... Finding user
+        // const user = await UserDto.findOne({ email: email})
+        // // ... Saving items into Order
+        // const order = new OrderDto({
+        //     totalPrice: totalPrice,
+        //     phoneNumber: phoneNumber,
+        //     name: name,
+        //     status: "Pending",
+        //     address: address,
+        //     user: new mongoose.Types.ObjectId(user._id),
+        //     items: listItemsId.map(value => new mongoose.Types.ObjectId(value)),
+        // })
+        // const resultOrder = await order.save()
+        // // ... sending email confirm order success
+        // sendingEmailConfirmOrder(email, items, name, phoneNumber, address, totalPrice)
+        await session.commitTransaction()
+        session.endSession()
         return [ resultOrder, null ]
     } catch (error) {
         console.log(error)
+        // Rollback any changes made in the database
+        await session.abortTransaction()
+        session.endSession()
         return [ null, error.message ]
     }
 }

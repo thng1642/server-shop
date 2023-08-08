@@ -37,29 +37,7 @@ router.post('/signup', checkSchema({
 router.get('/trending', controllerHome.getTrendingProducts)
 router.get('/product/:id', controllerHome.getDetailsProductById)
 router.get('/relative/product/:id', controllerHome.getRelativeProducts)
-router.post('/place-order', 
-    (req, res, next) => {
-        const items = req.body.items
-        const userInfo = req.body.userInfo
-        if (items.length === 0) {
-            res.status(400).json({
-                message: "Danh sách sản phẩm trống"
-            })
-            return
-        }
-        const userValues = Object.values(userInfo)
-        for (let i = 0; i < userValues.length; i++) {
-            // console.log(userValues[i])
-            if ( !userValues[i] ) {
-                res.status(400).json({
-                    message: "Thông tin khách hàng không hợp lệ"
-                })
-                return
-            }
-        }
-        next()
-    },
-[middleAuth], controllerHome.placeToOrder)
+router.post('/place-order', controllerHome.placeToOrder)
 router.post('/order', [middleAuth], controllerHome.historyOrders)
 router.post('/detail/order/', [middleAuth], controllerHome.getDetailsOrderById)
 module.exports = router
