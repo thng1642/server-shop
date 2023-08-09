@@ -14,6 +14,8 @@
 - Running on local: http://localhost:5000
 - Deploying API: https://server-shop.vercel.app
 - Deploying UI for Client: https://shop-ten-theta.vercel.app/
+- Deploying UI for Admin: Erroring with description image below
+![ERROR DEPLOY](https://i.postimg.cc/Fz3JWfJS/Error-deploy-vercel.png)
 ### 1. For Client:
 
 | Endpoint | Method | Description |
