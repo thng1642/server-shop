@@ -48,14 +48,14 @@ exports.getRelativeProducts = async (req, res) => {
 exports.placeToOrder = async (req, res) => {
     const { items, totalPrice, userInfo } = req.body
     // console.log(items, totalPrice, userInfo)
-    const [ data, error ] = await productService.placeToOrderProducts(items, 
+    const [ data, error ] = await productService.placeToOrderProducts(items,
         userInfo.email, userInfo.phoneNumber,
         userInfo.address, userInfo.name, totalPrice)
     
     if (data) {
         res.json(data)
     } else {
-        res.status(501).json(error)
+        res.status(400).json(error)
     }
 }
 /**

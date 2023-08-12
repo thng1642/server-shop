@@ -147,6 +147,7 @@ exports.placeToOrderProducts = async (items, email, phoneNumber,
         for (let i = 0; i < nItem; i++) {
             // ... update count of product in stock
             const stock = await StockDto.findOne({ product: items[i].id })
+            // stock out item in shop
             if (stock.count - items[i].quantity < 0) {
                 throw Error("Hết hàng!")
             }
@@ -163,27 +164,28 @@ exports.placeToOrderProducts = async (items, email, phoneNumber,
             listItemsId.push(result._id)
             await stock.updateOne({ count: stock.count - items[i].quantity }, { session })
         }
-        throw Error("Hết hàng!")
-        // // ... Finding user
-        // const user = await UserDto.findOne({ email: email})
-        // // ... Saving items into Order
-        // const order = new OrderDto({
-        //     totalPrice: totalPrice,
-        //     phoneNumber: phoneNumber,
-        //     name: name,
-        //     status: "Pending",
-        //     address: address,
-        //     user: new mongoose.Types.ObjectId(user._id),
-        //     items: listItemsId.map(value => new mongoose.Types.ObjectId(value)),
-        // })
-        // const resultOrder = await order.save()
-        // // ... sending email confirm order success
-        // sendingEmailConfirmOrder(email, items, name, phoneNumber, address, totalPrice)
+        // ... Finding user
+        const user = await UserDto.findOne({ email: email})
+        // ... Saving items into Order
+        const order = new OrderDto({
+            totalPrice: totalPrice,
+            phoneNumber: phoneNumber,
+            name: name,
+            status: "Pending",
+            address: address,
+            user: new mongoose.Types.ObjectId(user._id),
+            items: listItemsId.map(value => new mongoose.Types.ObjectId(value)),
+        })
+        const resultOrder = await order.save({ session })
+        // ... sending email confirm order success
+        sendingEmailConfirmOrder(email, items, name, phoneNumber, address, totalPrice)
         await session.commitTransaction()
         session.endSession()
         return [ resultOrder, null ]
     } catch (error) {
         console.log(error)
+        // sending email oder fail ?
+        
         // Rollback any changes made in the database
         await session.abortTransaction()
         session.endSession()
