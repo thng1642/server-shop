@@ -148,8 +148,9 @@ exports.placeToOrderProducts = async (items, email, phoneNumber,
             // ... update count of product in stock
             const stock = await StockDto.findOne({ product: items[i].id })
             // stock out item in shop
+            console.log("Stock: ", stock.items)
             if (stock.count - items[i].quantity < 0) {
-                throw Error("Hết hàng!")
+                throw Error(`Sản phầm ${items[i].name} hết hàng!`)
             }
             // ...Saving items of order
             const tmpItem = new ItemDto({
@@ -185,7 +186,6 @@ exports.placeToOrderProducts = async (items, email, phoneNumber,
     } catch (error) {
         console.log(error)
         // sending email oder fail ?
-        
         // Rollback any changes made in the database
         await session.abortTransaction()
         session.endSession()
