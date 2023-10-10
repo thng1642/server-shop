@@ -1,4 +1,4 @@
-# Shop tech server
+# Shop tech server - FUNiX Assignment
 ## Overview 
 1. Login/Sign up for client and login for admin.
 2. Place to order products then send confirm orders.
@@ -10,12 +10,20 @@
 - Node.js + Express
 - Database NoSQL Mongodb
 - REST API
-## List APIs:
-- Running on local: http://localhost:5000
+##  Deployment:
+#### 1. Running on local: http://localhost:5000
+a. Downloading packages
+```
+npm install
+```
+b. Start server
+```
+npm start
+```
 - Deploying API: https://server-shop.vercel.app
 - Deploying UI for Client: https://shop-ten-theta.vercel.app/
-- Deploying UI for Admin: Erroring with description image below
-![ERROR DEPLOY](https://i.postimg.cc/Fz3JWfJS/Error-deploy-vercel.png)
+
+### List APIs
 ### 1. For Client:
 
 | Endpoint | Method | Description |
@@ -42,7 +50,6 @@
 | /admin/api/v1/product | GET | get details product to update |
 | /admin/api/v1/product | GET | Updating product action |
 
-    2. For Admin:
 
 ## Database Schema
 
