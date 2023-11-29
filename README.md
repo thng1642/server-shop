@@ -28,8 +28,8 @@ npm start
 
 | Endpoint | Method | Description |
 |---|---|--- |
-| /api/v1/login | POST ||
-| /api/v1/signup| POST ||
+| /api/v1/login | POST |
+| /api/v1/signup| POST |
 | /api/v1/trending | GET | Show up list products |
 | /api/v1/product/:id | GET | gets details product |
 | /api/v1/relative/product/:id | GET | Gets relative product by category |
