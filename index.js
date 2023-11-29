@@ -30,6 +30,10 @@ app.use(session({
 const whiteList = ["http://localhost:3000", "http://localhost:3001", "https://shop-ten-theta.vercel.app"]
 const corsOptions = {
     origin: function(origin, callback) {
+        // bypassing for postman req with no cors
+        if (!origin) {
+            return callback(null, true)
+        }
         if (whiteList.indexOf(origin) !== -1) {
             callback(null, true)
         } else {
