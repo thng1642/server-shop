@@ -7,9 +7,7 @@ const session = require("express-session")
 
 const db = require('./config/db')
 const route = require('./routes')
-// //set view engine
-// app.set('view engine', 'ejs')
-app.use(express.static(__dirname, + '/template'))
+
 // Set up to server can readd request form/json from client
 app.use(express.urlencoded({
     extended: true

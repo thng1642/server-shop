@@ -33,11 +33,11 @@ router.post('/signup', checkSchema({
     }
     
 }),[signUpMid], controllerAuth.signUpClient)
-
 router.get('/trending', controllerHome.getTrendingProducts)
 router.get('/product/:id', controllerHome.getDetailsProductById)
 router.get('/relative/product/:id', controllerHome.getRelativeProducts)
 router.post('/place-order', controllerHome.placeToOrder)
 router.post('/order', [middleAuth], controllerHome.historyOrders)
 router.post('/detail/order/', [middleAuth], controllerHome.getDetailsOrderById)
+router.get("/userprofile", controllerHome.getUserProfile)
 module.exports = router

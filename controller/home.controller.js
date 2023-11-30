@@ -1,4 +1,8 @@
+const Redis = require("ioredis")
+require("dotenv").config()
+
 const productService = require('../service/product.service')
+const userService = require('../service/user.service')
 const adminService = require('../service/admin.service')
 const categoryDto = require("../model/Category")
 /**
@@ -135,4 +139,44 @@ exports.getAllCategory = async (req, res) => {
         }
     ))
     res.json(data)
+}
+/**
+ * Get user's profile
+ * [GET] /api/v1/userprofile
+ * DATE: 01/12/2023
+ * UPDATE DATE: 01/12/2023
+ * @author thng1642
+ */
+exports.getUserProfile = async (req, res) => {
+
+    const email = req.query.email
+    let userprofile
+    let error
+    // Checking user's profile was saved in Redis
+    const redis = async () => {
+        // connecting to Redis
+        const redisClient = new Redis({
+            host: process.env.REDIS_HOST,
+            port: process.env.REDIS_PORT,
+            username: process.env.REDIS_USERNAME,
+            password: process.env.REDIS_PASSWORD
+        })
+
+        userprofile = await redisClient.call("JSON.GET", email)
+
+        if (userprofile === null) {
+            // 1.get userprofile from database
+            const [ responsive, error ] = await userService.getUserprofileByEmail(email)
+            if (error) {
+                res.json(error)
+            } else {
+                // 2. set to Redis
+                redisClient.call("JSON.SET", email, '$' ,JSON.stringify(responsive))
+                res.json(responsive)
+            }
+        } else {
+            res.send(userprofile)
+        }
+    }
+    await redis()
 }
